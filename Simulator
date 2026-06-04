@@ -1,0 +1,21 @@
+def simulator():
+    import time
+    while True:
+        tele = {
+            "speed": round(random.uniform(80, 350), 1),
+            "rpm": random.randint(4000, 13000),
+            "lap": random.randint(1, 99),
+        }
+        mqtt_client.publish(TOPIC_TELEMETRY, json.dumps(tele))
+
+        tires = {"wear": round(random.uniform(0.1, 0.95), 3)}
+        mqtt_client.publish(TOPIC_TIRES, json.dumps(tires))
+
+        fuel = {"level": round(random.uniform(5, 100), 1)}
+        mqtt_client.publish(TOPIC_FUEL, json.dumps(fuel))
+
+        time.sleep(2)
+
+sim_thread = threading.Thread(target=simulator, daemon=True)
+sim_thread.start()
+print("Simulator started, publishing data every 2 seconds...")
