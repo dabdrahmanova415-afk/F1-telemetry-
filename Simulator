@@ -1,21 +1,27 @@
-def simulator():
-    import time
-    while True:
-        tele = {
-            "speed": round(random.uniform(80, 350), 1),
-            "rpm": random.randint(4000, 13000),
-            "lap": random.randint(1, 99),
-        }
-        mqtt_client.publish(TOPIC_TELEMETRY, json.dumps(tele))
+import json
+import random
+import time
+import paho.mqtt.client as mqtt
 
-        tires = {"wear": round(random.uniform(0.1, 0.95), 3)}
-        mqtt_client.publish(TOPIC_TIRES, json.dumps(tires))
+client = mqtt.Client()
+client.connect("mosquitto",1883)
 
-        fuel = {"level": round(random.uniform(5, 100), 1)}
-        mqtt_client.publish(TOPIC_FUEL, json.dumps(fuel))
+while True:
 
-        time.sleep(2)
+    telemetry = {
+        "car":"Ferrari_16",
+        "lap":random.randint(1,70),
+        "speed":random.randint(180,340),
+        "fuel":round(random.uniform(5,100),2),
+        "tire_wear":round(random.uniform(0,1),2)
+    }
 
-sim_thread = threading.Thread(target=simulator, daemon=True)
-sim_thread.start()
-print("Simulator started, publishing data every 2 seconds...")
+    client.publish(
+        "f1/telemetry",
+        json.dumps(telemetry)
+    )
+
+    time.sleep(3)
+
+
+    
